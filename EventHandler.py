@@ -31,11 +31,11 @@ class EventHandler(object):
         """
         if event.key == pygame.K_ESCAPE:
             self.__soundboard.close()
-        elif event.key == pygame.K_KP_DIVIDE:
+        elif event.key == pygame.K_2:
             self.__profile_modifier = True
-        elif event.key == pygame.K_KP_MULTIPLY:
+        elif event.key == pygame.K_3:
             self.__multiply_modifier = True
-        elif event.key == pygame.K_KP_PERIOD:
+        elif event.key == pygame.K_SPACE:
             self.__pressed_stop = True
 
         if event.key in self.__file_map and not self.__profile_modifier:
@@ -44,7 +44,7 @@ class EventHandler(object):
             else:
                 self.__soundboard.play(self.__file_map[event.key], loop=False)
 
-        if self.__multiply_modifier and self.__pressed_stop:
+        if self.__pressed_stop:
             self.__soundboard.stop_all_sounds()
 
     def __handle_key_up_event(self, event):
@@ -54,9 +54,9 @@ class EventHandler(object):
         if self.__profile_modifier and event.key in self.__file_map:
             self.__soundboard.use_profile(self.__file_map[event.key])
 
-        if event.key == pygame.K_KP_PERIOD:
+        if event.key == pygame.K_SPACE:
             self.__pressed_stop = False
-        elif event.key == pygame.K_KP_MULTIPLY:
+        elif event.key == pygame.K_3:
             self.__multiply_modifier = False
-        elif event.key == pygame.K_KP_DIVIDE:
+        elif event.key == pygame.K_2:
             self.__profile_modifier = False
