@@ -6,6 +6,11 @@ import sys
 import pygame
 from EventHandler import EventHandler
 
+"""
+TODO keys need to be more flexible
+in terms of assignment
+"""
+
 
 class Soundboard(object):
     __AUTO_KEYS = tuple("qweasdzxcv")
