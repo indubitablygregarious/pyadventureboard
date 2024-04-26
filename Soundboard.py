@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import yaml
-import os
 import logging
-import sys
+import os
 import pygame
 import pygame_gui
+import random
+import sys
+import yaml
 from EventHandler import EventHandler
 
 """
@@ -15,6 +16,9 @@ in terms of assignment
 
 class Soundboard(object):
     __AUTO_KEYS = tuple("qweasdzxcv")
+    # TODO: actually implement these keys without
+    # the toggle key
+    # __PROFILE_KEYS = tuple("yuihjknm,")
     __buttons = dict()
     __current_profile = None
     __labels = dict()
@@ -31,12 +35,15 @@ class Soundboard(object):
         )  # assuming a window size of 800x600
         self.__create_profile_buttons()
 
+        x = 0
         y = 0
+        button_size = (100, 50)
         for key in self.__AUTO_KEYS:
             button = pygame_gui.elements.UIButton(
-                relative_rect=pygame.Rect((0, y), (100, 50)),
+                relative_rect=pygame.Rect((x, y), button_size),
                 text=key,
                 manager=self.__manager,
+                object_id=pygame_gui.core.ObjectID(key, "profile_button"),
             )
             self.__buttons[button] = key
             label = pygame_gui.elements.UILabel(
@@ -125,6 +132,7 @@ class Soundboard(object):
                 relative_rect=pygame.Rect((x, y), button_size),
                 text=key,
                 manager=self.__manager,
+                object_id=pygame_gui.core.ObjectID(key, "profile_button"),
             )
             button.set_hold_range((10000, 10000))  # Set a large hold range
             self.__profile_buttons[button] = key
