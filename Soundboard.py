@@ -16,9 +16,7 @@ in terms of assignment
 
 class Soundboard(object):
     __AUTO_KEYS = tuple("qweasdzxcv")
-    # TODO: actually implement these keys without
-    # the toggle key
-    # __PROFILE_KEYS = tuple("yuihjknm,")
+    __PROFILE_KEYS = tuple("yuihjknm,")
     __buttons = dict()
     __current_profile = None
     __labels = dict()
@@ -154,7 +152,10 @@ class Soundboard(object):
         count = 0
         for key, label in self.__labels.items():
             if count < len(sound_names):
-                label.set_text(sound_names[count])
+                name, _ = os.path.splitext(
+                    sound_names[count]
+                )  # Split the name and extension
+                label.set_text(name.upper())  # Convert to uppercase
                 count += 1
             else:
                 label.set_text("")
