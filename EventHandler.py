@@ -1,17 +1,19 @@
 import pygame
+import pygame_gui
+import logging
 
 
 class EventHandler(object):
     __soundboard = None
-    __file_map = dict()
+    __keyboard_map = dict()
 
     __multiply_modifier = False
     __profile_modifier = False
     __pressed_stop = False
 
-    def __init__(self, soundboard, file_map: dict):
+    def __init__(self, soundboard, keyboard_map: dict):
+        self.__keyboard_map = keyboard_map
         self.__soundboard = soundboard
-        self.__file_map = file_map
 
     def handle(self, event_list: list):
         """
@@ -24,6 +26,16 @@ class EventHandler(object):
                 self.__handle_key_up_event(event)
             elif event.type == pygame.QUIT:
                 self.__soundboard.close()
+            elif event.type == pygame.USEREVENT:
+                if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                    self.__handle_button_click_event(event)
+
+    def __handle_button_click_event(self, event):
+        """
+        Handles the events of type button click
+        """
+        logging.debug(f"Button clicked: {event.ui_element.text}")
+        self.__soundboard.play(event.ui_element.text, loop=False)
 
     def __handle_key_down_event(self, event):
         """
@@ -38,11 +50,11 @@ class EventHandler(object):
         elif event.key == pygame.K_SPACE:
             self.__pressed_stop = True
 
-        if event.key in self.__file_map and not self.__profile_modifier:
+        if event.key in self.__keyboard_map and not self.__profile_modifier:
             if self.__multiply_modifier:
-                self.__soundboard.play(self.__file_map[event.key], loop=True)
+                self.__soundboard.play(self.__keyboard_map[event.key], loop=True)
             else:
-                self.__soundboard.play(self.__file_map[event.key], loop=False)
+                self.__soundboard.play(self.__keyboard_map[event.key], loop=False)
 
         if self.__pressed_stop:
             self.__soundboard.stop_all_sounds()
@@ -51,8 +63,8 @@ class EventHandler(object):
         """
         Handles the events of type keyup
         """
-        if self.__profile_modifier and event.key in self.__file_map:
-            self.__soundboard.use_profile(self.__file_map[event.key])
+        if self.__profile_modifier and event.key in self.__keyboard_map:
+            self.__soundboard.use_profile(self.__keyboard_map[event.key])
 
         if event.key == pygame.K_SPACE:
             self.__pressed_stop = False

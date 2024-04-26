@@ -1,7 +1,10 @@
 all: requirements.txt
 	echo ok
 
-requirements:
-	python3 -m venv venv
-	. venv/bin/activate
+venv:
+	python3 -m venv .venv
+	. .venv/bin/activate
+	pip3 install -r requirements.txt
+
+requirements.txt:
 	pip3 install -r requirements.txt
