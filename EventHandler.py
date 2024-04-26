@@ -35,7 +35,15 @@ class EventHandler(object):
         Handles the events of type button click
         """
         logging.debug(f"Button clicked: {event.ui_element.text}")
-        self.__soundboard.play(event.ui_element.text, loop=False)
+        # Check if the clicked button is a profile button
+        if event.ui_element in self.__soundboard.get_profile_buttons():
+            # If it is, switch to the corresponding profile
+            self.__soundboard.use_profile(
+                self.__soundboard.get_profile_buttons()[event.ui_element]
+            )
+        else:
+            # If it's not a profile button, play the corresponding sound
+            self.__soundboard.play(event.ui_element.text, loop=False)
 
     def __handle_key_down_event(self, event):
         """

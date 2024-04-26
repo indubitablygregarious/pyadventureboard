@@ -20,6 +20,7 @@ class Soundboard(object):
     __labels = dict()
     __manager = None
     __profiles = list()
+    __profile_buttons = dict()
     __sounds = dict()
 
     def __init__(self, profiles_folder: str):
@@ -28,6 +29,7 @@ class Soundboard(object):
         self.__manager = pygame_gui.UIManager(
             (800, 600)
         )  # assuming a window size of 800x600
+        self.__create_profile_buttons()
 
         y = 0
         for key in self.__AUTO_KEYS:
@@ -98,6 +100,44 @@ class Soundboard(object):
             self.__current_profile = key
             break
 
+    def __create_profile_buttons(self):
+        """
+        Creates a profile picking widget in the upper right corner with buttons for each of the auto keys.
+        """
+        start_x = 600
+        x = start_x  # Starting x-coordinate for the buttons, adjust as needed
+        y = 30  # Starting y-coordinate for the buttons, leave space for the label
+        button_size = (50, 30)  # Reduced button size
+        button_spacing = 40  # Reduced button spacing
+        buttons_per_row = 3  # Number of buttons per row
+        row_spacing = 60  # Spacing between rows
+
+        # Create a label at the top
+        label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((x, 0), (150, 30)),  # Adjust as needed
+            text="Profile Picker",
+            manager=self.__manager,
+        )
+
+        button_count = 0
+        for key in self.__AUTO_KEYS:
+            button = pygame_gui.elements.UIButton(
+                relative_rect=pygame.Rect((x, y), button_size),
+                text=key,
+                manager=self.__manager,
+            )
+            button.set_hold_range((10000, 10000))  # Set a large hold range
+            self.__profile_buttons[button] = key
+
+            button_count += 1
+            if button_count % buttons_per_row == 0:
+                # Move to the next row
+                x = start_x  # Reset x-coordinate
+                y += row_spacing  # Move y-coordinate down
+            else:
+                # Move to the next button in the same row
+                x += button_spacing
+
     def update_labels(self):
         """
         Updates the labels with the names of the sounds in the current profile.
@@ -119,7 +159,19 @@ class Soundboard(object):
             logging.debug("The profile number %s is not available" % profile_key)
             return
 
+        # Unpress the previously selected button
+        if self.__current_profile is not None:
+            for button, key in self.__profile_buttons.items():
+                if key == self.__current_profile:
+                    button.unselect()
+
         self.__current_profile = profile_key
+
+        # Press the newly selected button
+        for button, key in self.__profile_buttons.items():
+            if key == profile_key:
+                button.select()
+
         self.update_labels()
 
         logging.debug("Using profile number %s" % profile_key)
@@ -143,6 +195,12 @@ class Soundboard(object):
                 "Either the profile number %s key or the sound key %s do not exist"
                 % (profile, sound_key)
             )
+
+    def get_profile_buttons(self):
+        """
+        Returns the pygame_gui manager
+        """
+        return self.__profile_buttons
 
     def get_manager(self):
         """
