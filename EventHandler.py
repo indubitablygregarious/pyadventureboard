@@ -59,6 +59,10 @@ class EventHandler(object):
             self.__pressed_stop = True
 
         if event.key in self.__keyboard_map and not self.__profile_modifier:
+            sound_key = self.__keyboard_map[event.key]
+            for button, key in self.__soundboard.get_buttons().items():
+                if key == sound_key:
+                    button.select()
             if self.__multiply_modifier:
                 self.__soundboard.play(self.__keyboard_map[event.key], loop=True)
             else:
@@ -71,6 +75,12 @@ class EventHandler(object):
         """
         Handles the events of type keyup
         """
+        if event.key in self.__keyboard_map:
+            sound_key = self.__keyboard_map[event.key]
+            for button, key in self.__soundboard.get_buttons().items():
+                if key == sound_key:
+                    button.unselect()
+
         if self.__profile_modifier and event.key in self.__keyboard_map:
             self.__soundboard.use_profile(self.__keyboard_map[event.key])
 

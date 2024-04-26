@@ -204,6 +204,12 @@ class Soundboard(object):
                 % (profile, sound_key)
             )
 
+    def get_buttons(self):
+        """
+        Returns the pygame_gui manager
+        """
+        return self.__buttons
+
     def get_profile_buttons(self):
         """
         Returns the pygame_gui manager
